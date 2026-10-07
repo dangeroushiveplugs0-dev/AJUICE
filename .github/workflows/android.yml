@@ -10,14 +10,10 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - uses: actions/setup-node@v4
         with: { node-version: '22' }
-      - name: Bundle Three.js
-        run: |
-          mkdir -p web/libs/three
-          curl -L https://cdn.jsdelivr.net/npm/three@0.173.0/build/three.module.js -o web/libs/three/build-three.module.js
-          mkdir -p web/libs/three/build web/libs/three/examples/jsm/controls
-          mv web/libs/three/build-three.module.js web/libs/three/build/three.module.js
-          curl -L https://cdn.jsdelivr.net/npm/three@0.173.0/examples/jsm/controls/OrbitControls.js -o web/libs/three/examples/jsm/controls/OrbitControls.js
-          curl -L https://cdn.jsdelivr.net/npm/three@0.173.0/examples/jsm/controls/TransformControls.js -o web/libs/three/examples/jsm/controls/TransformControls.js
+      - name: Install web bundler
+        run: npm install --no-save three@0.173.0 esbuild
+      - name: Bundle AJUICE web app
+        run: npx esbuild web/src/main.js --bundle --format=iife --platform=browser --outfile=web/ajui.bundle.js
       - name: Prepare assets
         run: bash scripts/prepare_web_assets.sh
       - name: Build APK
